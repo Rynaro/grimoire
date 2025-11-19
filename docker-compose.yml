@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  grimoire:
+    build: .
+    container_name: grimoire
+    stdin_open: true
+    tty: true
+    volumes:
+      # Mount local notes directory
+      - ./notes:/notes
+      # For development: mount the app code
+      - ./grimoire.py:/app/grimoire.py
+    environment:
+      - TERM=xterm-256color
+    command: []

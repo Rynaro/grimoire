@@ -1,0 +1,116 @@
+╔════════════════════════════════════════════════════════════════════╗
+║                                                                    ║
+║     ▄████  ██▀███   ██▓ ███▄ ▄███▓ ▒█████   ██▓ ██▀███  ▓█████   ║
+║    ██▒ ▀█▒▓██ ▒ ██▒▓██▒▓██▒▀█▀ ██▒▒██▒  ██▒▓██▒▓██ ▒ ██▒▓█   ▀   ║
+║   ▒██░▄▄▄░▓██ ░▄█ ▒▒██▒▓██    ▓██░▒██░  ██▒▒██▒▓██ ░▄█ ▒▒███     ║
+║   ░▓█  ██▓▒██▀▀█▄  ░██░▒██    ▒██ ▒██   ██░░██░▒██▀▀█▄  ▒▓█  ▄   ║
+║   ░▒▓███▀▒░██▓ ▒██▒░██░▒██▒   ░██▒░ ████▓▒░░██░░██▓ ▒██▒░▒████▒  ║
+║    ░▒   ▒ ░ ▒▓ ░▒▓░░▓  ░ ▒░   ░  ░░ ▒░▒░▒░ ░▓  ░ ▒▓ ░▒▓░░░ ▒░ ░  ║
+║     ░   ░   ░▒ ░ ▒░ ▒ ░░  ░      ░  ░ ▒ ▒░  ▒ ░  ░▒ ░ ▒░ ░ ░  ░  ║
+║   ░ ░   ░   ░░   ░  ▒ ░░      ░   ░ ░ ░ ▒   ▒ ░  ░░   ░    ░     ║
+║         ░    ░      ░         ░       ░ ░   ░     ░        ░  ░  ║
+║                                                                    ║
+║                   Your Personal Terminal Codex                     ║
+║                                                                    ║
+╚════════════════════════════════════════════════════════════════════╝
+
+Welcome to Grimoire! 📖✨
+
+A beautiful terminal-based note-taking app inspired by Apple Notes and Obsidian.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 QUICK START
+
+1. Install dependencies:
+   pip install -r requirements.txt
+
+2. Launch Grimoire:
+   python grimoire.py
+
+   Or use the quick script:
+   ./run.sh
+
+3. Optional - Run in Docker:
+   docker-compose build
+   docker-compose run --rm grimoire
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⌨️  KEYBOARD SHORTCUTS
+
+   Ctrl+N  →  Create new note
+   Ctrl+E  →  Toggle Edit/View mode
+   Ctrl+S  →  Save note
+   Ctrl+D  →  Delete note
+   Ctrl+F  →  Search notes
+   F5      →  Refresh file tree
+   Ctrl+Q  →  Quit
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✨ FEATURES
+
+   ✓ Beautiful terminal UI
+   ✓ Full markdown support
+   ✓ Syntax-highlighted code blocks
+   ✓ Wiki-style note linking [[like this]]
+   ✓ Full-text search
+   ✓ Folder organization
+   ✓ Plain text storage (you own your data!)
+   ✓ Fast & lightweight
+   ✓ Docker support
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 DOCUMENTATION
+
+   → INDEX.md          - Documentation index
+   → QUICKSTART.md     - 5-minute getting started guide
+   → README.md         - Complete documentation
+   → FEATURES.md       - Feature overview
+   → examples/         - Sample notes and templates
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔧 VERIFICATION
+
+   Run the verification script to check your setup:
+   ./verify.sh
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 TIPS
+
+   • Notes are stored in ~/grimoire-notes/ by default
+   • Use folders: "projects/My Project" when creating notes
+   • Link notes: [[Note Name]] or [[folder/Note Name]]
+   • Press Tab to switch between sidebar and content area
+   • All notes are plain markdown files - edit anywhere!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 FIRST STEPS
+
+   1. Read QUICKSTART.md (it's really quick!)
+   2. Run: python grimoire.py
+   3. Explore the welcome note
+   4. Press Ctrl+E to edit
+   5. Press Ctrl+N to create your first note
+   6. Start building your knowledge base!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📮 SUPPORT
+
+   • Documentation: See INDEX.md for all docs
+   • Issues: Open an issue on GitHub
+   • Contributing: See CONTRIBUTING.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Built with ❤️  for terminal enthusiasts and knowledge workers.
+
+License: MIT | Python 3.11+ | Textual + Rich
+
+Happy note-taking! 🔮📖✨
