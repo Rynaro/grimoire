@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  grimoire:
+    build: .
+    container_name: grimoire
+    stdin_open: true
+    tty: true
+    volumes:
+      - grimoire-notes:/root/.grimoire
+    environment:
+      - TERM=xterm-256color
+    # For development, you can mount local notes directory
+    # volumes:
+    #   - ./notes:/root/.grimoire
+
+volumes:
+  grimoire-notes:
