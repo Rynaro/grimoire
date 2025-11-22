@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  grimoire:
+    build: .
+    container_name: grimoire
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./notes:/notes
+    environment:
+      - TERM=xterm-256color
