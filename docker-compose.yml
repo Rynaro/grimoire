@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  grimoire:
+    build: .
+    container_name: grimoire
+    volumes:
+      - ./notes:/root/.grimoire/notes
+    stdin_open: true
+    tty: true
