@@ -4,14 +4,14 @@ require 'curses'
 require 'pastel'
 require_relative 'components/sidebar'
 require_relative 'components/note_area'
-require_relative 'utils/file_manager'
-require_relative 'utils/search'
+require_relative 'application/service_container'
+require_relative 'domain/value_objects/note_path'
+require_relative 'domain/value_objects/note_name'
 
 module Grimoire
   class Application
     def initialize(notes_dir = nil)
-      @file_manager = Utils::FileManager.new(notes_dir)
-      @search = Utils::Search.new(@file_manager)
+      @service_container = Application::ServiceContainer.new(notes_dir)
       @pastel = Pastel.new
       @running = true
       @sidebar_width = 30
@@ -40,12 +40,16 @@ module Grimoire
 
       # Sidebar window
       @sidebar_win = Curses::Window.new(screen_height, @sidebar_width, 0, 0)
-      @sidebar = Components::Sidebar.new(@sidebar_win, @file_manager)
+      @sidebar = Components::Sidebar.new(@sidebar_win, @service_container.search_notes_service)
 
       # Note area window
       note_area_width = screen_width - @sidebar_width
       @note_area_win = Curses::Window.new(screen_height, note_area_width, 0, @sidebar_width)
-      @note_area = Components::NoteArea.new(@note_area_win, @file_manager)
+      @note_area = Components::NoteArea.new(
+        @note_area_win,
+        @service_container.note_repository,
+        @service_container.update_note_service
+      )
 
       # Status bar window (at bottom)
       @status_win = Curses::Window.new(1, screen_width, screen_height - 1, 0)
@@ -149,16 +153,8 @@ module Grimoire
     def perform_search
       return if @search_query.empty?
 
-      @search_results = @search.search_content(@search_query)
-      @sidebar.items = @search_results.map do |result|
-        {
-          type: :note,
-          name: result[:name],
-          path: result[:path],
-          folder: result[:folder],
-          matches: result[:matches]
-        }
-      end
+      @search_results = @service_container.search_notes_service.search_by_content(@search_query)
+      @sidebar.items = @search_results
       @sidebar.selected_index = 0 if @sidebar.items.length > 0
       @sidebar.scroll_offset = 0
     end
@@ -212,11 +208,19 @@ module Grimoire
       Curses.curs_set(0)
 
       if name && !name.empty?
-        path = @file_manager.create_note(name)
-        @sidebar.refresh_items
-        @note_area.load_note(path)
-        @note_area.set_mode(Components::NoteArea::MODE_EDIT)
-        Curses.curs_set(1)
+        begin
+          note = @service_container.create_note_service.execute(name: name)
+          @sidebar.refresh_items
+          @note_area.load_note(note.path)
+          @note_area.set_mode(Components::NoteArea::MODE_EDIT)
+          Curses.curs_set(1)
+        rescue ArgumentError => e
+          # Handle error - could show in status bar
+          @status_win.clear
+          @status_win.addstr("Error: #{e.message}")
+          @status_win.refresh
+          sleep(2)
+        end
       end
     end
 
@@ -236,13 +240,20 @@ module Grimoire
       Curses.curs_set(0)
 
       if ch.chr.downcase == 'y'
-        if item[:type] == :folder
-          @file_manager.delete_folder(item[:path])
-        else
-          @file_manager.delete_note(item[:path])
+        begin
+          if item[:type] == :folder
+            @service_container.delete_folder_service.execute(name: item[:name])
+          else
+            @service_container.delete_note_service.execute(path: item[:path])
+          end
+          @sidebar.refresh_items
+          @note_area.load_note(nil) if item[:type] == :note
+        rescue ArgumentError => e
+          @status_win.clear
+          @status_win.addstr("Error: #{e.message}")
+          @status_win.refresh
+          sleep(2)
         end
-        @sidebar.refresh_items
-        @note_area.load_note(nil) if item[:type] == :note
       end
     end
 

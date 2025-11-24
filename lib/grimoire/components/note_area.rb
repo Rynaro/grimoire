@@ -3,6 +3,7 @@
 require 'curses'
 require 'pastel'
 require_relative '../utils/markdown_renderer'
+require_relative '../domain/value_objects/note_path'
 
 module Grimoire
   module Components
@@ -10,16 +11,18 @@ module Grimoire
       MODE_VIEW = :view
       MODE_EDIT = :edit
 
-      attr_reader :window, :mode, :content, :file_path, :scroll_offset, :cursor_pos
+      attr_reader :window, :mode, :content, :file_path, :scroll_offset, :cursor_pos, :current_note
 
-      def initialize(window, file_manager)
+      def initialize(window, note_repository, update_service)
         @window = window
-        @file_manager = file_manager
+        @note_repository = note_repository
+        @update_service = update_service
         @pastel = Pastel.new
         @markdown_renderer = Utils::MarkdownRenderer.new
         @mode = MODE_VIEW
         @content = ''
         @file_path = nil
+        @current_note = nil
         @scroll_offset = 0
         @cursor_pos = { x: 0, y: 0 }
         @edit_buffer = []
@@ -35,15 +38,29 @@ module Grimoire
       end
 
       def load_note(path)
-        return unless path && File.exist?(path)
+        return unless path
 
-        @file_path = path
-        @content = @file_manager.read_note(path) || ''
-        @edit_buffer = @content.lines.map(&:chomp)
-        @scroll_offset = 0
-        @cursor_pos = { x: 0, y: 0 }
-        @edit_cursor = { x: 0, y: 0 }
-        @mode = MODE_VIEW
+        note_path = if path.is_a?(String)
+                      Grimoire::Domain::ValueObjects::NotePath.new(path)
+                    else
+                      path
+                    end
+        @current_note = @note_repository.find_by_path(note_path)
+        
+        if @current_note
+          @file_path = note_path.to_s
+          @content = @current_note.content.to_s
+          @edit_buffer = @content.lines.map(&:chomp)
+          @scroll_offset = 0
+          @cursor_pos = { x: 0, y: 0 }
+          @edit_cursor = { x: 0, y: 0 }
+          @mode = MODE_VIEW
+        else
+          @current_note = nil
+          @file_path = nil
+          @content = ''
+          @edit_buffer = []
+        end
       end
 
       def set_mode(new_mode)
@@ -74,8 +91,8 @@ module Grimoire
       end
 
       def mode_title
-        if @file_path
-          name = File.basename(@file_path, '.md')
+        if @current_note
+          name = @current_note.name.to_s
           mode_indicator = @mode == MODE_VIEW ? '[VIEW]' : '[EDIT]'
           "#{mode_indicator} #{name}"
         else
@@ -158,10 +175,14 @@ module Grimoire
       end
 
       def save
-        return unless @file_path && @mode == MODE_EDIT
+        return unless @current_note && @mode == MODE_EDIT
 
         @content = @edit_buffer.join("\n")
-        @file_manager.write_note(@file_path, @content)
+        @current_note = @update_service.execute(
+          path: @current_note.path,
+          content: @content
+        )
+        @content = @current_note.content.to_s
         @mode = MODE_VIEW
       end
 

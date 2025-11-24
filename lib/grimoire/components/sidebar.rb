@@ -8,9 +8,9 @@ module Grimoire
     class Sidebar
       attr_reader :window, :selected_index, :items, :scroll_offset
 
-      def initialize(window, file_manager)
+      def initialize(window, search_service)
         @window = window
-        @file_manager = file_manager
+        @search_service = search_service
         @pastel = Pastel.new
         @selected_index = 0
         @scroll_offset = 0
@@ -19,7 +19,7 @@ module Grimoire
       end
 
       def refresh_items
-        @items = @file_manager.list_all_items
+        @items = @search_service.list_all_items
         @selected_index = 0 if @selected_index >= @items.length
         @scroll_offset = 0 if @scroll_offset >= @items.length
       end
