@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  grimoire:
+    build: .
+    container_name: grimoire
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./notes:/root/grimoire_notes
+      - .:/app
+    environment:
+      - GRIMOIRE_NOTES_DIR=/root/grimoire_notes
+      - TERM=xterm-256color

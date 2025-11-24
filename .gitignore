@@ -1,0 +1,43 @@
+# Ruby
+*.gem
+*.rbc
+.bundle
+.config
+coverage
+InstalledFiles
+lib/bundler/man
+pkg
+rdoc
+spec/reports
+test/tmp
+test/version_tmp
+tmp
+*.log
+
+# RVM / rbenv
+.ruby-version
+.ruby-gemset
+.rvmrc
+
+# Bundler
+vendor/bundle
+.bundle/
+
+# Notes (keep the examples though)
+notes/*
+!notes/Welcome.md
+!notes/examples/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.dockerignore
