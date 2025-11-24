@@ -100,11 +100,11 @@ Current specs cover:
 
 ## Architecture Notes
 
+- **Domain layer** (`Grimoire::Domain::*`) contains the `Note` aggregate plus the `LinkResolver` service and repository contract.
+- **Application layer** (`Grimoire::Application::Services`) exposes orchestrators such as `NoteCatalog` and `SearchNotes`, keeping the UI decoupled from persistence.
+- **Infrastructure layer** (`Grimoire::Infrastructure::Filesystem::NotesRepository`) is the only class touching the filesystem.
+- **Presentation layer** (`Grimoire::Presentation::TUI` + `Formatter`) handles the curses UI and rendering concerns.
 - `Grimoire::Config` keeps settings under `~/.config/grimoire` and enforces `0700` permissions on the notes root.
-- `Grimoire::Repository` is the single gateway for filesystem work: slug generation, sanitised paths, creation, deletion, and link resolution.
-- `Grimoire::TUI` orchestrates the curses layout (sidebar, note area, overlays), command routing, prompts, and external editor hand-offs.
-- `Grimoire::Formatter` provides a minimal Markdown-aware tokenizer for colourful rendering without large dependencies.
-- `Grimoire::Search` composes on top of the repository for both metadata and full-text queries.
 
 ## Security Considerations
 

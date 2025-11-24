@@ -34,9 +34,11 @@ module Grimoire
         return
       end
 
-      repository = Repository.new(config.notes_root)
-      search = Search.new(repository)
-      tui = TUI.new(repository:, config:, search:)
+      repository = Infrastructure::Filesystem::NotesRepository.new(config.notes_root)
+      link_resolver = Domain::LinkResolver.new(repository)
+      catalog = Application::Services::NoteCatalog.new(repository:, link_resolver:)
+      search_service = Application::Services::SearchNotes.new(repository)
+      tui = Presentation::TUI.new(catalog:, search_service:, config:)
       tui.start
     rescue OptionParser::ParseError => e
       warn e.message

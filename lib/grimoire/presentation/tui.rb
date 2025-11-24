@@ -5,31 +5,32 @@ require "shellwords"
 require "set"
 
 module Grimoire
-  # Primary Curses interface for navigating, editing, and searching notes
-  class TUI
-    SidebarEntry = Struct.new(:type, :label, :path, :depth, :note, keyword_init: true)
+  module Presentation
+    # Primary Curses interface for navigating, editing, and searching notes
+    class TUI
+      SidebarEntry = Struct.new(:type, :label, :path, :depth, :note, keyword_init: true)
 
-    attr_reader :repository, :config, :search
+      attr_reader :catalog, :config, :search_service
 
-    def initialize(repository:, config:, search:)
-      @repository = repository
-      @config = config
-      @search = search
-      @sidebar_entries = []
-      @sidebar_scroll = 0
-      @selected_index = 0
-      @collapsed_folders = Set.new
-      @focus = :sidebar
-      @status_message = "Welcome to Grimoire"
-      @status_style = :info
-      @note_lines = []
-      @note_scroll = 0
-      @note_cursor_line = 0
-      @note_links_by_line = {}
-      @active_note = nil
-      @running = false
-      @help_text = "Tab switch • n new note • f new folder • d delete • e edit • / find • ? grep • o open link • q quit"
-      @overlay_window = nil
+      def initialize(catalog:, search_service:, config:)
+        @catalog = catalog
+        @search_service = search_service
+        @config = config
+        @sidebar_entries = []
+        @sidebar_scroll = 0
+        @selected_index = 0
+        @collapsed_folders = Set.new
+        @focus = :sidebar
+        @status_message = "Welcome to Grimoire"
+        @status_style = :info
+        @note_lines = []
+        @note_scroll = 0
+        @note_cursor_line = 0
+        @note_links_by_line = {}
+        @active_note = nil
+        @running = false
+        @help_text = "Tab switch • n new note • f new folder • d delete • e edit • / find • ? grep • o open link • q quit"
+        @overlay_window = nil
     end
 
     def start
@@ -208,7 +209,7 @@ module Grimoire
 
     def draw_note_header(note_x, note_width)
       title = @active_note.title
-      subtitle = repository.relative_path(@active_note.path)
+      subtitle = catalog.relative_path(@active_note.path)
       header = "#{title} — #{subtitle}"
       Curses.setpos(0, note_x)
       Curses.attrset(color_pair(:heading))
@@ -433,7 +434,7 @@ module Grimoire
       @note_cursor_line = 0
       @note_links_by_line = {}
       @note_lines.each_with_index do |line, idx|
-        matches = line.scan(Note::LINK_PATTERN).flatten
+        matches = line.scan(Domain::Note::LINK_PATTERN).flatten
         @note_links_by_line[idx] = matches if matches.any?
       end
       message("Opened #{note.id}")
@@ -468,12 +469,12 @@ module Grimoire
     end
 
     def build_folder_entries(folder_rel, depth, entries)
-      label = folder_rel.empty? ? repository.root.basename.to_s : File.basename(folder_rel)
+      label = folder_rel.empty? ? catalog.root_label : File.basename(folder_rel)
       entries << SidebarEntry.new(type: :folder, label:, path: folder_rel, depth:, note: nil)
 
       return entries if collapsed?(folder_rel)
 
-      repository.notes_in(folder_rel).each do |note|
+      catalog.notes_in(folder_rel).each do |note|
         entries << SidebarEntry.new(
           type: :note,
           label: note.title,
@@ -483,7 +484,7 @@ module Grimoire
         )
       end
 
-      repository.subfolders(folder_rel).each do |child_rel|
+      catalog.subfolders(folder_rel).each do |child_rel|
         build_folder_entries(child_rel, depth + 1, entries)
       end
     end
@@ -499,7 +500,7 @@ module Grimoire
         folder = File.join(folder, *parts)
       end
 
-      note = repository.create_note_in(folder:, title:)
+      note = catalog.create_note(folder:, title:)
       reload_sidebar(preserve_note: false)
       if (idx = @sidebar_entries.index { |entry| entry.type == :note && entry.note.id == note.id })
         @selected_index = idx
@@ -514,7 +515,7 @@ module Grimoire
       folder = prompt("Folder path relative to root:")
       return unless folder
 
-      repository.create_folder(folder)
+      catalog.create_folder(folder)
       reload_sidebar
       message("Folder created", style: :success)
     rescue Error => e
@@ -529,7 +530,7 @@ module Grimoire
       when :note
         return unless confirm?("Delete note #{entry.note.title}?")
 
-        repository.delete_note(entry.note.id)
+        catalog.delete_note(entry.note.id)
         reload_sidebar(preserve_note: false)
         open_first_note
         message("Note deleted", style: :success)
@@ -541,7 +542,7 @@ module Grimoire
 
         return unless confirm?("Delete folder #{entry.path} (and contents)?")
 
-        repository.delete_folder(entry.path)
+        catalog.delete_folder(entry.path)
         reload_sidebar(preserve_note: false)
         open_first_note
         message("Folder deleted", style: :success)
@@ -574,7 +575,7 @@ module Grimoire
       query = prompt("Search titles:")
       return unless query
 
-      results = search.by_title(query)
+      results = search_service.by_title(query)
       if results.empty?
         message("No matches for '#{query}'", style: :error)
         return
@@ -592,7 +593,7 @@ module Grimoire
       query = prompt("Search content:")
       return unless query
 
-      results = search.by_content(query)
+      results = search_service.by_content(query)
       if results.empty?
         message("No matches for '#{query}'", style: :error)
         return
@@ -634,7 +635,7 @@ module Grimoire
                     end
       return unless target_name
 
-      note = repository.resolve_link(target_name, current_folder: @active_note.folder)
+      note = catalog.resolve_link(target_name, current_folder: @active_note.folder)
       if note&.exists?
         load_note(note)
         reload_sidebar
@@ -753,4 +754,5 @@ module Grimoire
       @screen_height - 2
     end
   end
+end
 end

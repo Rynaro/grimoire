@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Grimoire::Repository do
+RSpec.describe Grimoire::Infrastructure::Filesystem::NotesRepository do
   let(:tmpdir) { Dir.mktmpdir }
   let(:repository) { described_class.new(tmpdir) }
 
