@@ -10,6 +10,7 @@ COPY Gemfile .
 RUN bundle install
 
 COPY . .
+RUN chmod +x bin/grimoire
 
 ENV GRIMOIRE_NOTES_ROOT=/data/grimoire
 VOLUME ["/data"]
