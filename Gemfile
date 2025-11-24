@@ -10,8 +10,15 @@ gem 'tty-screen', '~> 0.8'
 gem 'pastel', '~> 0.8'
 
 # Markdown rendering
-gem 'rouge', '~> 4.2' # Syntax highlighting
-gem 'redcarpet', '~> 3.6' # Markdown parsing
+gem 'rouge', '~> 4.2'
+gem 'redcarpet', '~> 3.6'
+
+# Dependency Injection
+gem 'dry-container', '~> 0.11'
+gem 'dry-auto_inject', '~> 1.0'
+
+# Validation
+gem 'dry-validation', '~> 1.10'
 
 # File system watching
 gem 'listen', '~> 3.8'

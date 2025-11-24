@@ -57,7 +57,7 @@ if [ ! -d "$NOTES_DIR" ]; then
     
     # Copy example notes
     if [ -d "notes" ]; then
-        cp -r notes/* "$NOTES_DIR/"
+        cp -r notes/* "$NOTES_DIR/" 2>/dev/null || true
         echo "✓ Example notes copied to $NOTES_DIR"
     fi
 fi

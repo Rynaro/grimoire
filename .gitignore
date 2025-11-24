@@ -14,17 +14,13 @@ test/version_tmp
 tmp
 *.log
 
-# RVM / rbenv
-.ruby-version
-.ruby-gemset
-.rvmrc
-
 # Bundler
 vendor/bundle
 .bundle/
 
-# Notes (keep the examples though)
+# Notes (keep examples)
 notes/*
+!notes/.gitkeep
 !notes/Welcome.md
 !notes/examples/
 

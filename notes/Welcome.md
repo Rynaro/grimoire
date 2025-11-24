@@ -1,6 +1,6 @@
 # Welcome to Grimoire ✦
 
-Welcome to **Grimoire**, your personal terminal-based knowledge companion!
+Welcome to **Grimoire**, your personal terminal-based knowledge companion built with **Domain-Driven Design** principles!
 
 ## Getting Started
 
@@ -12,6 +12,40 @@ Grimoire helps you capture, organize, and connect your thoughts—all from the c
 - Press `n` to create a new note
 - Press `e` to edit the current note
 - Press `/` to search your notes
+
+## Architecture
+
+Grimoire is built following **Domain-Driven Design (DDD)** and **SOLID principles**:
+
+### Layered Architecture
+
+```
+┌─────────────────────────────────┐
+│   UI Layer (Terminal)           │
+├─────────────────────────────────┤
+│   Application Layer (Use Cases) │
+├─────────────────────────────────┤
+│   Domain Layer (Entities, VOs)  │
+├─────────────────────────────────┤
+│   Infrastructure (File System)  │
+└─────────────────────────────────┘
+```
+
+### Domain Model
+
+- **Note** - Aggregate Root Entity
+- **NotePath** - Value Object
+- **NoteContent** - Value Object
+- **NoteMetadata** - Value Object
+- **FolderPath** - Value Object
+
+### SOLID Principles
+
+- **Single Responsibility**: Each class has one reason to change
+- **Open/Closed**: Open for extension, closed for modification
+- **Liskov Substitution**: Proper interface implementations
+- **Interface Segregation**: Small, focused interfaces
+- **Dependency Inversion**: Depend on abstractions via DI
 
 ## Features
 
@@ -27,42 +61,29 @@ Grimoire fully supports markdown syntax:
 ### Code Blocks
 
 ```ruby
-def greet(name)
-  puts "Hello, #{name}!"
+# Example: Domain Entity
+class Note
+  def update_content(new_content)
+    @content = NoteContent.new(new_content)
+    @metadata = @metadata.touch
+  end
 end
-
-greet("World")
 ```
 
 ```python
-def fibonacci(n):
-    if n <= 1:
-        return n
-    return fibonacci(n-1) + fibonacci(n-2)
+# Example: Clean architecture
+def create_note(name, folder=None):
+    """Use case orchestrates domain logic"""
+    note = Note.create(name=name, folder=folder)
+    repository.save(note)
+    return note
 ```
 
 ### Note Linking
 
 Connect your notes using `[[note name]]` syntax:
 
-Check out the [[Getting Started Guide]] and [[Keyboard Shortcuts]].
-
-### Lists
-
-- First item
-- Second item
-  - Nested item
-  - Another nested item
-- Third item
-
-1. Numbered item
-2. Another numbered item
-3. Final item
-
-### Blockquotes
-
-> "The best way to predict the future is to invent it."
-> - Alan Kay
+Check out the [[DDD Architecture Guide]] and [[SOLID Principles]].
 
 ---
 
@@ -70,4 +91,4 @@ Check out the [[Getting Started Guide]] and [[Keyboard Shortcuts]].
 
 All your notes are stored as plain markdown files in your filesystem. You have complete control and ownership.
 
-Happy note-taking! 📝
+**Happy note-taking!** 📝

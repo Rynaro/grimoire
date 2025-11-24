@@ -41,7 +41,4 @@ clean: ## Clean temporary files
 test: ## Run tests (TODO)
 	@echo "Tests not yet implemented"
 
-format: ## Format code with RuboCop (requires rubocop)
-	@bundle exec rubocop -a || echo "RuboCop not available"
-
 .DEFAULT_GOAL := help
