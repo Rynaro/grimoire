@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../lib/grimoire'
+
+notes_dir = ARGV[0] || ENV['GRIMOIRE_NOTES_DIR']
+
+app = Grimoire::Application.new(notes_dir)
+app.run

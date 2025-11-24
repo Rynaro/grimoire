@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  grimoire:
+    build: .
+    container_name: grimoire-dev
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./notes:/root/.grimoire/notes
+      - ./lib:/app/lib
+      - ./bin:/app/bin
+    environment:
+      - GRIMOIRE_NOTES_DIR=/root/.grimoire/notes
+    command: ruby bin/grimoire
