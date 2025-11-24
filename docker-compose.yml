@@ -1,0 +1,10 @@
+services:
+  grimoire:
+    build: .
+    volumes:
+      - ./notes:/data/grimoire
+    environment:
+      EDITOR: ${EDITOR:-nano}
+    command: ["bin/grimoire", "--root", "/data/grimoire"]
+    tty: true
+    stdin_open: true
