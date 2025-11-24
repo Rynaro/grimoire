@@ -7,15 +7,19 @@ Get up and running with Grimoire in under 5 minutes! ⚡
 Perfect for trying Grimoire without installing dependencies:
 
 ```bash
-# Build and run with Docker Compose
-docker-compose up --build
+# Recommended: Use the helper script
+./docker-run.sh
 
-# Your notes will be saved in ./notes directory
+# Or manually:
+docker-compose build
+docker-compose run --rm grimoire
 ```
 
-That's it! Grimoire will launch in your terminal.
+**Important**: Use `docker-compose run` (not `up`) for proper terminal interaction!
 
-To stop: Press `q` to quit Grimoire, then `Ctrl+C` to stop Docker.
+Your notes will be saved in `./notes` directory.
+
+To stop: Press `q` to quit Grimoire.
 
 ## Option 2: Local Installation
 

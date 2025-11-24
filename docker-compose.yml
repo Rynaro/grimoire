@@ -6,9 +6,13 @@ services:
     container_name: grimoire
     stdin_open: true
     tty: true
+    # Use "it" mode for proper terminal interaction
+    # Run with: docker-compose run --rm grimoire
     volumes:
       - ./notes:/root/grimoire_notes
       - .:/app
     environment:
       - GRIMOIRE_NOTES_DIR=/root/grimoire_notes
       - TERM=xterm-256color
+      - LANG=C.UTF-8
+      - LC_ALL=C.UTF-8

@@ -44,12 +44,22 @@ Grimoire follows **Domain-Driven Design** (DDD) with a clean layered architectur
 
 ### Using Docker (Recommended)
 
-```bash
-# Build and run
-docker-compose up --build
+**Important**: Use `docker-compose run` (not `up`) for proper terminal interaction:
 
-# Your notes will be saved in ./notes directory
+```bash
+# Easy way - Use the helper script
+./docker-run.sh
+
+# Or manually with docker-compose
+docker-compose build
+docker-compose run --rm grimoire
+
+# Or with docker directly
+docker build -t grimoire .
+docker run -it --rm -v $(pwd)/notes:/root/grimoire_notes grimoire
 ```
+
+**Why `run` instead of `up`?** Curses applications need proper TTY allocation, which `docker-compose run` provides but `up` doesn't.
 
 ### Local Installation
 

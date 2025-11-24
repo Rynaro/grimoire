@@ -22,7 +22,7 @@ docker-build: ## Build Docker image
 
 docker-run: ## Run Grimoire in Docker
 	@echo "Starting Grimoire in Docker..."
-	@docker-compose up
+	@./docker-run.sh
 
 docker-shell: ## Open shell in Docker container
 	@docker-compose run --rm grimoire /bin/sh
